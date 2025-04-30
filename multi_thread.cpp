@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
 
     omp_set_num_threads(num_threads);
-    #pragma omp parallel for reduction(+:total_count)
+    #pragma omp parallel for reduction(+:total_count) schedule(dynamic)
     for (int i = 0; i < files.size(); ++i) {
         int value = search_word_in_file(files[i], target_word);
         #pragma omp atomic
