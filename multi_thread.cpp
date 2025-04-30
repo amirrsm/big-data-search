@@ -48,9 +48,15 @@ int search_word_in_file(const std::string& filepath, const std::string& target) 
     return count;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << " <target_word> <num_threads>" << std::endl;
+        return 1;
+    }
+
     std::string folder_path = "./generated_files";
-    std::string target_word = "brandy";
+    std::string target_word = argv[1];
+    int num_threads = std::stoi(argv[2]);
 
     std::vector<std::string> files;
     for (const auto& entry : fs::directory_iterator(folder_path)) {
@@ -63,7 +69,7 @@ int main() {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    omp_set_num_threads(10);
+    omp_set_num_threads(num_threads);
     #pragma omp parallel for reduction(+:total_count)
     for (int i = 0; i < files.size(); ++i) {
         total_count += search_word_in_file(files[i], target_word);
@@ -73,7 +79,7 @@ int main() {
     std::chrono::duration<double> elapsed = end - start;
 
     std::cout << "\nTotal occurrences of \"" << target_word << "\": " << total_count << std::endl;
-    std::cout << "Time taken with OpenMP: " << elapsed.count() << " seconds" << std::endl;
+    std::cout << "Time taken with OpenMP (" << num_threads << " threads): " << elapsed.count() << " seconds" << std::endl;
 
     return 0;
 }

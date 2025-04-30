@@ -41,9 +41,14 @@ int search_word_in_file(const std::string& filepath, const std::string& target) 
     return count;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <target_word>" << std::endl;
+        return 1;
+    }
+
     std::string folder_path = "./generated_files"; // Folder containing text files
-    std::string target_word = "brandy"; // Word to search
+    std::string target_word = argv[1]; // Get word from command line
 
     auto start = std::chrono::high_resolution_clock::now();
 
