@@ -72,7 +72,9 @@ int main(int argc, char* argv[]) {
     omp_set_num_threads(num_threads);
     #pragma omp parallel for reduction(+:total_count)
     for (int i = 0; i < files.size(); ++i) {
-        total_count += search_word_in_file(files[i], target_word);
+        int value = search_word_in_file(files[i], target_word);
+        #pragma omp atomic
+        total_count += value;
     }
 
     auto end = std::chrono::high_resolution_clock::now();
